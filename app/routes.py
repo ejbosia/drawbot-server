@@ -55,7 +55,7 @@ def homing():
 
 # home the drawbot
 @app.route('/stop',  methods=['POST'])
-def homing():
+def stop():
 
     if drawbot.is_connected() and drawbot.is_running():
         drawbot.stop()
