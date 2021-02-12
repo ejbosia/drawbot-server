@@ -53,6 +53,21 @@ def homing():
     return(response) 
 
 
+# home the drawbot
+@app.route('/stop',  methods=['POST'])
+def homing():
+
+    if drawbot.is_connected() and drawbot.is_running():
+        drawbot.stop()
+        flash("PROCESS STOPPED")
+    else:
+        flash("NO CONNECTION")
+
+    response = make_response(redirect(url_for('index')))
+    return(response) 
+
+
+
 # select a file to run
 @app.route('/select/<filename>')
 def select(filename):   

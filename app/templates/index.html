@@ -26,6 +26,10 @@
             <button id="REV" class="robot">RUN</button>
         </form>
 
+        <form action="/stop" method="POST">
+            <button id="REV" class="robot">STOP</button>
+        </form>
+
         <form action="/upload">
             <button id="REV" class="robot">UPLOAD</button>
         </form>
@@ -37,7 +41,7 @@
         {% endfor %}
     
         <br>
-        
+
         {% for mesg in get_flashed_messages() %}
         <li>{{ mesg }}</li>
         {% endfor %}

@@ -15,6 +15,7 @@ class Drawbot:
     def __init__(self):
         self.ser = None
         self.thread = None
+        self.stop_threads = False
 
     # connect to the 3D printer
     def connect(self, port = '/dev/ttyUSB0', baud_rate=115200):
@@ -44,6 +45,11 @@ class Drawbot:
         self.ser.write(b'G00 Z0.5;\n')
         self.ser.read_until()
 
+    # kill the running thread
+    def stop(self):
+        if self.is_running():
+            self.stop_threads = True
+
     # run the input filename
     def run(self, filename):
 
@@ -63,6 +69,11 @@ class Drawbot:
 
         # send the file to print
         for line in file:
+
+            if self.stop_threads:
+                self.stop_threads = False
+                break
+
             print(line)
             self.ser.write((line+"\n").encode('utf-8'))
             # get the ok message
@@ -83,6 +94,8 @@ class Drawbot:
         if self.is_running():
             return False
 
+        self.stop_threads = False
+        
         self.thread = threading.Thread(target=self.run, args=(filename,))
         self.thread.start()
 
