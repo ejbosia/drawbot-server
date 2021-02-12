@@ -16,6 +16,9 @@ import drawbot
 
 selected = ""
 
+t1 = None
+
+
 print("RELOAD")
 
 @app.route('/')
@@ -42,12 +45,22 @@ This calls G28 on serial
 @app.route('/home',  methods=['POST'])
 def homing():
     print("HOMING")
+    global t1
+
+
+    if t1 is None:
+        print("NONE")
+    else:
+        print(t1.is_alive())
     response = make_response(redirect(url_for('index')))
     return(response) 
 
 
 @app.route('/command/<changepin>', methods=['POST'])
 def reroute(changepin):
+
+
+
 
     changePin = int(changepin) #cast changepin to an int
     if changePin == 1:
@@ -67,29 +80,27 @@ def reroute(changepin):
 def select(filename):   
     global selected
     selected = filename
+
+    global t1
+    t1 = threading.Thread(target=drawbot.wait, args=(5,))
     return redirect(url_for('index')) 
 
-# do something for 10 seconds
-def wait():
-    time.sleep(5)
+
 
 
 @app.route('/run', methods=['POST'])
 def run():
 
     # run a parallel process
-    t1 = threading.Thread(target=wait)
+    global t1
+
+    if t1 is None:
+        flash("NO FILE SELECTED")
+        return redirect('/')
 
     start = datetime.datetime.now()
 
     t1.start()
-
-    while t1.is_alive():
-        print(t1.is_alive(), datetime.datetime.now()-start) 
-        time.sleep(1)
-
-    print(t1.is_alive(), datetime.datetime.now()-start) 
-    time.sleep(1)
 
     response = make_response(redirect(url_for('index')))
     return(response)

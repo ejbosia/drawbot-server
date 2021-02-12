@@ -19,6 +19,9 @@ def connect(port = '/dev/ttyUSB0', baud_rate=115200):
     print(ser.name)
 
 
+def wait(x):
+    sleep(x)
+
 # connect to the 3D printer
 def disconnect():
     ser = None
