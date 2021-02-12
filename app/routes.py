@@ -11,15 +11,12 @@ import os
 import time
 import threading
 import datetime
-import drawbot
+from drawbot import Drawbot
 
 
 selected = ""
 
-t1 = None
-
-
-print("RELOAD")
+drawbot = Drawbot()
 
 @app.route('/')
 def index():
@@ -30,86 +27,71 @@ def index():
                             file_list=files
                             )
 
+# connect to the drawbot
 @app.route('/connect',  methods=['POST'])
 def connect():
-    print("CONNECT")
+    
+    try:
+        drawbot.connect()
+    except:
+        flash("CONNECTION NOT FOUND")
+
     response = make_response(redirect(url_for('index')))
     return(response) 
 
 
-'''
-Home the drawbot
-
-This calls G28 on serial
-'''
+# home the drawbot
 @app.route('/home',  methods=['POST'])
 def homing():
-    print("HOMING")
-    global t1
 
-
-    if t1 is None:
-        print("NONE")
+    if drawbot.is_connected():
+        drawbot.home()
     else:
-        print(t1.is_alive())
+        flash("NO CONNECTION")
+
     response = make_response(redirect(url_for('index')))
     return(response) 
 
 
-@app.route('/command/<changepin>', methods=['POST'])
-def reroute(changepin):
-
-
-
-
-    changePin = int(changepin) #cast changepin to an int
-    if changePin == 1:
-        print("1")
-    elif changePin == 2:
-        print("2")
-    elif changePin == 3:
-        print("3")
-    elif changePin == 4:
-        print("4")
-    else:
-        print("STOP")
-    response = make_response(redirect(url_for('index')))
-    return(response)
-
+# select a file to run
 @app.route('/select/<filename>')
 def select(filename):   
     global selected
-    selected = filename
 
-    global t1
-    t1 = threading.Thread(target=drawbot.wait, args=(5,))
+    selected = filename
+    
     return redirect(url_for('index')) 
 
 
-
-
+# run the current selected file
 @app.route('/run', methods=['POST'])
 def run():
 
-    # run a parallel process
-    global t1
+    # check the connection
+    if not drawbot.is_connected():
+        flash("NO CONNECTION")
+        return redirect('/')
 
-    if t1 is None:
+    # run a parallel process
+    global selected
+
+    if not selected:
         flash("NO FILE SELECTED")
         return redirect('/')
 
-    start = datetime.datetime.now()
-
-    t1.start()
+    drawbot.run_async(selected)
 
     response = make_response(redirect(url_for('index')))
     return(response)
 
+
+# open the upload html
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
 	
 
+# upload a gcode file to the drawbot
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
 
