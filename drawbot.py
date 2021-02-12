@@ -81,8 +81,6 @@ class Drawbot:
 
         sleep(5)
 
-        self.ser.reset_input_buffer()
-
         self.ser.write(b'G28;/n')
         sleep(10)
         self.ser.close()
