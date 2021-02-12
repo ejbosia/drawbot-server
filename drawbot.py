@@ -32,9 +32,9 @@ def enumerate_selection(items):
 
     index = int(input("ENTER SELECTION"))
 
-    print("SELECTED:", item[i])
+    print("SELECTED:", items[index])
 
-    return i
+    return index
 
 
 def main():
@@ -44,17 +44,33 @@ def main():
 
     # select a file
     files = next(os.walk("files"))[2]
-    index = enumerate_selection()
+    index = enumerate_selection(files)
 
     # read the input file
-    file = open(files[index],'r')
+    file = open(os.path.join("files",files[index]),'r')
+
+    ser.reset_input_buffer()
+
+    ser.write(b'G00 F5000;\n')
+    ser.read_until()
+    ser.write(b'G01 F3600;\n')
+    ser.read_until()
+
+
+    print(file.name)
 
     # send the file to print
     for line in file:
         print(line)
         ser.write((line+"\n").encode('utf-8'))
+        # get the ok message
+        ser.read_until()
 
+    sleep(5)
+    ser.flush_input_buffer()
 
+    ser.write(b'G28;/n')
+    sleep(10)
     ser.close()
     file.close()
 
