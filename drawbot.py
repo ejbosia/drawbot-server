@@ -71,6 +71,8 @@ class Drawbot:
         for line in file:
 
             if self.stop_threads:
+                print("STOPPED!")
+
                 self.stop_threads = False
                 break
 
@@ -79,10 +81,9 @@ class Drawbot:
             # get the ok message
             self.ser.read_until()
 
-        sleep(5)
-
+        print("DONE!c")
         self.ser.write(b'G28;/n')
-        sleep(10)
+        self.ser.read_until()
         self.ser.close()
         file.close()
 
