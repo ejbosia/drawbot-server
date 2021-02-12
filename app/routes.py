@@ -130,7 +130,7 @@ def upload_file():
         if f and allowed_filename(f.filename):            
             filename = secure_filename(f.filename)
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file', filename=filename))
+            return redirect(url_for('index'))
         
         else:
             flash('Invalid file type')
