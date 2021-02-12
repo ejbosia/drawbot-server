@@ -82,7 +82,6 @@ class Drawbot:
         print("DONE!c")
         self.ser.write(b'G28;/n')
         self.ser.read_until()
-        self.ser.close()
         file.close()
 
     # run the gcode asynchronously
