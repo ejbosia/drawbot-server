@@ -60,8 +60,6 @@ class Drawbot:
         # read the input file
         file = open(os.path.join("files",filename),'r')
 
-        self.ser.reset_input_buffer()
-
         self.ser.write(b'G00 F5000;\n')
         self.ser.read_until()
         self.ser.write(b'G01 F3600;\n')
