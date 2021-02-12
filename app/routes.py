@@ -94,7 +94,9 @@ def run():
         flash("NO FILE SELECTED")
         return redirect('/')
 
-    drawbot.run_async(selected)
+    if not drawbot.run_async(selected):
+        flash("PROCESS ALREADY RUNNING")
+        return redirect('/')
 
     response = make_response(redirect(url_for('index')))
     return(response)
