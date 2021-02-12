@@ -1,0 +1,17 @@
+<html>
+    <body>
+
+        {% for mesg in get_flashed_messages() %}
+            <h1>{{ mesg }}</h1>
+        {% endfor %}
+
+        <form action = "http://localhost:5000/uploader" method = "POST" 
+            enctype = "multipart/form-data">
+            <input type = "file" name = "file" />
+            <input type = "submit"/>
+        </form>  
+        
+        <form action="/">
+            <button id="REV" class="robot">Cancel</button>
+        </body>
+</html>

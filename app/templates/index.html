@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Drawbot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+
+        <h2>Drawbot</h2>
+            
+        <form action="/connect" method="POST">
+            <button id="FWD" class="robot">CONNECT</button>
+        </form>
+
+        <form action="/home" method="POST">
+            <button id="FWD" class="robot">HOME</button>
+        </form>
+
+        <form action="/command/2" method="POST">
+            <button id="LFT" class="robot">MOVE</button>
+        </form>
+        
+
+        <form action="/run" method="POST">
+            <button id="REV" class="robot">RUN</button>
+        </form>
+
+        <form action="/upload">
+            <button id="REV" class="robot">UPLOAD</button>
+        </form>
+
+        <p>Selected File: {{ selected_file }}</p>
+
+        {% for x in file_list %}
+        <li class='mark'>{{ x }} <a href="{{ url_for('select', filename=x) }}">select</a></li>
+        {% endfor %}
+    
+    </body>
+</html>
