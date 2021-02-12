@@ -3,12 +3,15 @@ from flask import render_template, flash, redirect, url_for, request, make_respo
 from app import app
 from app.forms import LoadForm
 
-
 from werkzeug.utils import secure_filename
 
 from werkzeug.urls import url_parse
 
 import os
+import time
+import threading
+import datetime
+import drawbot
 
 
 selected = ""
@@ -66,11 +69,30 @@ def select(filename):
     selected = filename
     return redirect(url_for('index')) 
 
+# do something for 10 seconds
+def wait():
+    time.sleep(5)
+
+
 @app.route('/run', methods=['POST'])
 def run():
 
-    return render_template('load.html', file_list = files)
-	
+    # run a parallel process
+    t1 = threading.Thread(target=wait)
+
+    start = datetime.datetime.now()
+
+    t1.start()
+
+    while t1.is_alive():
+        print(t1.is_alive(), datetime.datetime.now()-start) 
+        time.sleep(1)
+
+    print(t1.is_alive(), datetime.datetime.now()-start) 
+    time.sleep(1)
+
+    response = make_response(redirect(url_for('index')))
+    return(response)
 
 @app.route('/upload')
 def upload():
